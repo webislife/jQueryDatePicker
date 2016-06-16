@@ -206,7 +206,7 @@
                 weekShortDays = moment.weekdaysShort(),
                 firstDayOfWeek = date.clone().startOf('month').weekday();
 
-            
+            //FIXME грязный хак для русских) если кто-то найдет вариант элегантнее и быстрее по cpu. Буду рад поправить) 
             if(this.params.firstDayOfWeek === 1) {
                 weekShortDays = ['пн', 'вт', 'ср', 'чт', 'пт', 'cб', 'вс'];
             }
