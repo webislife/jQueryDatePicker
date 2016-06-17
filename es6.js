@@ -153,7 +153,9 @@
          * Init all events
          */
         initEvents() {
-            this.$el.on('click', '.dt__calendar_start .dt__calendar_m_d', event => this.setActiveDate(event, 'start'))
+            //jQuery Calendar
+            this.$el
+                .on('click', '.dt__calendar_start .dt__calendar_m_d', event => this.setActiveDate(event, 'start'))
                 .on('click', '.dt__calendar_end .dt__calendar_m_d', event => this.setActiveDate(event, 'end'))
                 .on('click', '.dt__start .dt__calendar_head_month .next', event => this.nextDate(event, 'start', 'month'))
                 .on('click', '.dt__start .dt__calendar_head_month .prev', event => this.prevDate(event, 'start', 'month'))
@@ -167,22 +169,28 @@
                 .on('click', '.dt-modal_close', event => this.hideCalendar())
                 .on('click', '.dt__wrapper', event => false);
 
-            this.el.on('click', event => event.stopPropagation())
+            //Input 
+            this.el
+                .on('click', event => event.stopPropagation())
                 .on('focus', event => {
                     this.showCalendar();
                     event.stopPropagation();
                 });
 
-            $(document).on('click', event => this.hideCalendar())
-                       .on('keydown', event => this.keyDown(event));
+            $(document).on('click', event => this.hideCalendar());
+            $(window).on('keydown', event => this.keyDown(event));
         }
         /**
          * KeyDown event handler
          * @param  {event} jQuery event
-         * @return {void} [description]
+         * @return {void} 
          */
         keyDown(event) {
-            console.log(event);
+            console.log('keydown', event);
+            //Hide on press ESC
+            if(event.keyCode === 27) {
+                this.hideCalendar();
+            }
         }
 
         showCalendar() {

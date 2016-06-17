@@ -180,13 +180,18 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                 $(document).on('click', function (event) {
                     return _this.hideCalendar();
-                }).on('keydown', function (event) {
+                });
+                $(window).on('keydown', function (event) {
                     return _this.keyDown(event);
                 });
             }
         }, {
             key: 'keyDown',
-            value: function keyDown(event) {}
+            value: function keyDown(event) {
+                if (event.keyCode === 27) {
+                    this.hideCalendar();
+                }
+            }
         }, {
             key: 'showCalendar',
             value: function showCalendar() {

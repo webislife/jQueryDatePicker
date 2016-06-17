@@ -56,9 +56,9 @@
 
 .dt__calendar_head_wday { line-height: 25px; color: #fff; display: block; width: 100%; font-size: 12px; background: rgba(0, 0, 0, 0.2); text-transform: uppercase; font-weight: 300; }
 
-.dt__calendar_head_month { color: #fff; font-size: 18px; display: block; height: 30px; font-weight: 300; opacity: 0.8; line-height: 30px; }
+.dt__calendar_head_month { color: #fff; font-size: 18px; display: block; height: 30px; font-weight: 300; line-height: 30px; }
 
-.dt__calendar_head_month > span { display: inline-block; min-width: 70px; font-size: 15px; }
+.dt__calendar_head_month > span { display: inline-block; min-width: 70px; }
 
 .dt__calendar_head_day { color: #fff; font-size: 34px; display: block; height: 50px; line-height: 48px; }
 
