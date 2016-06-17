@@ -1,10 +1,30 @@
 # jQueryDatePicker
 Simple javascript date range picker. Work with moment.js
 [See demo](http://webislife.ru/daterangepicker)
+### Available params
+    {
+        type: 'date', // || rangedate
+        startDate: moment(), //startDate
+        endDate: moment(), //endDate
+        locale: 'ru',
+        format: 'YYYY.MM.DD', //Display date format
+        delimiter: '-', // display visual delimiter for rangedate type picker
+        ranges: [], //ranges
+        modalMode: false, //display center on screen
+        firstDayOfWeek: 1, //for rus weekday fix)
+        onShow: () => {},
+        onHide: () => {}
+    }
+
 ### Example init
 
     $('#singleDateRange').DatePicker({
         startDate: moment()
+    });
+    
+    $('#modalMode').DatePicker({
+        startDate: moment(),
+        modalMode: true
     });
 
     $('#rangedate').DatePicker({
