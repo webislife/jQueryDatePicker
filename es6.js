@@ -3,10 +3,6 @@
 
     class DatePicker {
         constructor(el, params) {
-            this.el = el;
-            this.$el = $(document.createElement('div'));
-            //Append calendar after input elemnt
-            this.el.after(this.$el);
 
             //default params
             this.params = $.extend({
@@ -15,11 +11,26 @@
                 endDate: moment(), //endDate
                 locale: 'ru',
                 format: 'YYYY.MM.DD', //Display date format
-                delimiter: '-', // display visual delimiters for rangedate type picker
-                ranges: [], //defualt rasnges is empty
-                firstDayOfWeek: 1 //for rus weekday fix)
+                delimiter: '-', // display visual delimiter for rangedate type picker
+                ranges: [], //ranges
+                modalMode: false, //display center on screen
+                firstDayOfWeek: 1, //for rus weekday fix)
+                onShow: () => {},
+                onHide: () => {}
             }, params);
 
+            //Save elements link and create calendar div
+            this.el = el;
+            this.$el = $(document.createElement('div'));
+
+            if(!this.params.modalMode) {
+                //Append calendar after input elemnt
+                this.el.after(this.$el);
+            } else {
+                $(document.body).append(this.$el);
+            }
+
+            //Set locale
             moment.locale(this.params.locale);
 
             //Current view date in calendar
@@ -32,8 +43,10 @@
 
             this.render.call(this);
             
+            //Init all event listeners
             this.initEvents();
             
+            //Set default input value
             this.setValue();
 
             return this;
@@ -151,6 +164,7 @@
                 .on('click', '.dt__end .dt__calendar_head_year .next', event => this.nextDate(event, 'end', 'year'))
                 .on('click', '.dt__end .dt__calendar_head_year .prev', event => this.prevDate(event, 'end', 'year'))
                 .on('click', '.dt__rages_item', event => this.setActiveRange(event))
+                .on('click', '.dt-modal_close', event => this.hideCalendar())
                 .on('click', '.dt__wrapper', event => false);
 
             this.el.on('click', event => event.stopPropagation())
@@ -159,12 +173,25 @@
                     event.stopPropagation();
                 });
 
-            $(document).on('click', event => this.hideCalendar());
+            $(document).on('click', event => this.hideCalendar())
+                       .on('keydown', event => this.keyDown(event));
         }
+        /**
+         * KeyDown event handler
+         * @param  {event} jQuery event
+         * @return {void} [description]
+         */
+        keyDown(event) {
+            console.log(event);
+        }
+
         showCalendar() {
+            this.params.onShow();
             this.$el.addClass('show');
         }
+
         hideCalendar() {
+            this.params.onHide();
             this.$el.removeClass('show');
         }
         /**
@@ -199,6 +226,13 @@
 
             return html;
         }
+
+        /**
+         * Render full calendar with header and content
+         * @param  {date} date momentdate 
+         * @param  {String} start || end
+         * @return {Sting} html template string
+         */
         renderCalendar(date, type = 'start') {
             var html = '',
                 navClass = type,
@@ -206,7 +240,7 @@
                 weekShortDays = moment.weekdaysShort(),
                 firstDayOfWeek = date.clone().startOf('month').weekday();
 
-            //FIXME грязный хак для русских) если кто-то найдет вариант элегантнее и быстрее по cpu. Буду рад поправить) 
+            //small hack for russian weekdays
             if(this.params.firstDayOfWeek === 1) {
                 weekShortDays = ['пн', 'вт', 'ср', 'чт', 'пт', 'cб', 'вс'];
             }
@@ -214,9 +248,9 @@
             html += '<div class="dt__calendar dt__' + type + '">';
             html += '<div class="dt__calendar_head">';
             html += '<div class="dt__calendar_head_wday">' + selectDate.format('dddd') + '</div>';
-            html += '<div class="dt__calendar_head_month"><span class="prev"><</span>' + selectDate.format('MMMM') + '<span class="next">></span></div>';
+            html += '<div class="dt__calendar_head_month"><i class="prev"><</i><span>' + selectDate.format('MMMM') + '</span><i class="next">></i></div>';
             html += '<div class="dt__calendar_head_day">' + selectDate.format('D') + '</div>';
-            html += '<div class="dt__calendar_head_year"><span class="prev"><</span>' + selectDate.format('Y') + '<span class="next">></span></div>';
+            html += '<div class="dt__calendar_head_year"><i class="prev"><</i>' + selectDate.format('Y') + '<i class="next">></i></div>';
             html += '</div>';
             html += '<div class="dt__calendar_nav">';
             html += '<div class="dt__calendar_nav_title">' + date.format('MMM YYYY') + '</div>';
@@ -236,6 +270,9 @@
             html += this.renderMonth(date, type);
 
             html += '</div></div>';
+
+            if(this.params.modalMode) html += '<div class="dt-modal_close">&#215;</div>';
+            
             html += '</div>';
 
             return html;
@@ -248,9 +285,9 @@
             var html = '',
                 ranges = this.params.ranges;
 
-            html += '<div class="dt__rages">';
+            html += '<div class="dt__ranges">';
             for (let i = 0, l = ranges.length; i < l; i++) {
-                html += '<div class="dt__rages_item" data-range="' + i + '"">' + ranges[i].label + '</div>';
+                html += '<div class="dt__ranges_item" data-range="' + i + '"">' + ranges[i].label + '</div>';
             }
             html += '</div>';
             return html;
@@ -275,6 +312,7 @@
             }
 
             html += '</div>';
+
             this.$el.html(html);
 
             //afer render
@@ -286,20 +324,28 @@
         setValue() {
             if (this.params.type === 'date') {
                 this.el.val(this.dateStart.format(this.params.format));
+            //range with delimiter
             } else {
-                //range with delimiter
                 this.el.val(this.dateStart.format(this.params.format) + this.params.delimiter + this.dateEnd.format(this.params.format));
             }
         }
+        /**
+         * After render logic
+         */
         onAfterRender() {
             this.$el.addClass('dt');
+
             if (this.params.type == 'rangedate') {
                 this.$el.find('.dt__wrapper').addClass('rangedate');
+            }
+
+            if (this.params.modalMode) {
+                this.$el.addClass('dt-modal');
             }
         }
     }
 
-    //Register for jQuery Plgin
+    //Register for jQuery Plugin
     if (window.jQuery) {
         //Small warpper for jQuery plugin support
         jQuery.fn.DatePicker = function(params) {

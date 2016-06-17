@@ -1,6 +1,10 @@
-.dt { position: absolute; background-color: #fff; top: 50px; left: 0; z-index: 100; transition: all 0.3s ease; opacity: 0.5; max-height: 0px; max-width: 0px; overflow: hidden; border-radius: 50%; box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.15); }
+.dt { position: absolute; background-color: #fff; top: 50px; left: 0; z-index: 100; transition: all 0.3s ease; opacity: 0.5; max-height: 0px; max-width: 0px; overflow: hidden; border-radius: 30%; box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.15); }
 
 .dt.show { overflow: inherit; max-width: 600px; max-height: 520px; opacity: 1; display: block; border-radius: 0; }
+
+.dt-modal { left: 50%; top: 50%; transform: translate(-50%, -50%); box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.35); }
+
+.dt-modal_close { position: absolute; width: 25px; height: 25px; top: 0; right: 0; z-index: 20; color: #fff; font-size: 15px; background: rgba(0, 0, 0, 0.2); text-align: center; cursor: pointer; }
 
 .dt__head { background: #27ae60; color: #fff; padding: 0 10px; }
 
@@ -32,11 +36,11 @@
 
 .dt__wrapper.rangedate .dt__calendar:first-child .dt__calendar_start { border-right: 1px solid #eee; margin-right: 5px; padding-right: 5px; }
 
-.dt__rages { display: block; text-align: center; background-color: #ecf0f1; }
+.dt__ranges { display: block; text-align: center; background-color: #ecf0f1; }
 
-.dt__rages_item { display: inline-block; font-size: 12px; color: #3498db; cursor: pointer; line-height: 30px; padding: 0 5px; }
+.dt__ranges_item { display: inline-block; font-size: 12px; color: #3498db; cursor: pointer; line-height: 30px; padding: 0 5px; }
 
-.dt__rages_item:hover { color: #27ae60; }
+.dt__ranges_item:hover { color: #27ae60; }
 
 .dt__calendar { font-size: 0px; display: inline-block; vertical-align: top; }
 
@@ -53,6 +57,8 @@
 .dt__calendar_head_wday { line-height: 25px; color: #fff; display: block; width: 100%; font-size: 12px; background: rgba(0, 0, 0, 0.2); text-transform: uppercase; font-weight: 300; }
 
 .dt__calendar_head_month { color: #fff; font-size: 18px; display: block; height: 30px; font-weight: 300; opacity: 0.8; line-height: 30px; }
+
+.dt__calendar_head_month > span { display: inline-block; min-width: 70px; font-size: 15px; }
 
 .dt__calendar_head_day { color: #fff; font-size: 34px; display: block; height: 50px; line-height: 48px; }
 

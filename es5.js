@@ -11,11 +11,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         function DatePicker(el, params) {
             _classCallCheck(this, DatePicker);
 
-            this.el = el;
-            this.$el = $(document.createElement('div'));
-
-            this.el.after(this.$el);
-
             this.params = $.extend({
                 type: 'date',
                 startDate: moment(),
@@ -24,7 +19,20 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 format: 'YYYY.MM.DD',
                 delimiter: '-',
                 ranges: [],
-                firstDayOfWeek: 1 }, params);
+                modalMode: !1,
+                firstDayOfWeek: 1,
+                onShow: function onShow() {},
+                onHide: function onHide() {}
+            }, params);
+
+            this.el = el;
+            this.$el = $(document.createElement('div'));
+
+            if (!this.params.modalMode) {
+                this.el.after(this.$el);
+            } else {
+                $(document.body).append(this.$el);
+            }
 
             moment.locale(this.params.locale);
 
@@ -157,6 +165,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     return _this.prevDate(event, 'end', 'year');
                 }).on('click', '.dt__rages_item', function (event) {
                     return _this.setActiveRange(event);
+                }).on('click', '.dt-modal_close', function (event) {
+                    return _this.hideCalendar();
                 }).on('click', '.dt__wrapper', function (event) {
                     return !1;
                 });
@@ -170,16 +180,23 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                 $(document).on('click', function (event) {
                     return _this.hideCalendar();
+                }).on('keydown', function (event) {
+                    return _this.keyDown(event);
                 });
             }
         }, {
+            key: 'keyDown',
+            value: function keyDown(event) {}
+        }, {
             key: 'showCalendar',
             value: function showCalendar() {
+                this.params.onShow();
                 this.$el.addClass('show');
             }
         }, {
             key: 'hideCalendar',
             value: function hideCalendar() {
+                this.params.onHide();
                 this.$el.removeClass('show');
             }
         }, {
@@ -229,9 +246,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 html += '<div class="dt__calendar dt__' + type + '">';
                 html += '<div class="dt__calendar_head">';
                 html += '<div class="dt__calendar_head_wday">' + selectDate.format('dddd') + '</div>';
-                html += '<div class="dt__calendar_head_month"><span class="prev"><</span>' + selectDate.format('MMMM') + '<span class="next">></span></div>';
+                html += '<div class="dt__calendar_head_month"><i class="prev"><</i><span>' + selectDate.format('MMMM') + '</span><i class="next">></i></div>';
                 html += '<div class="dt__calendar_head_day">' + selectDate.format('D') + '</div>';
-                html += '<div class="dt__calendar_head_year"><span class="prev"><</span>' + selectDate.format('Y') + '<span class="next">></span></div>';
+                html += '<div class="dt__calendar_head_year"><i class="prev"><</i>' + selectDate.format('Y') + '<i class="next">></i></div>';
                 html += '</div>';
                 html += '<div class="dt__calendar_nav">';
                 html += '<div class="dt__calendar_nav_title">' + date.format('MMM YYYY') + '</div>';
@@ -251,6 +268,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 html += this.renderMonth(date, type);
 
                 html += '</div></div>';
+
+                if (this.params.modalMode) html += '<div class="dt-modal_close">&#215;</div>';
+
                 html += '</div>';
 
                 return html;
@@ -261,9 +281,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 var html = '',
                     ranges = this.params.ranges;
 
-                html += '<div class="dt__rages">';
+                html += '<div class="dt__ranges">';
                 for (var i = 0, l = ranges.length; i < l; i++) {
-                    html += '<div class="dt__rages_item" data-range="' + i + '"">' + ranges[i].label + '</div>';
+                    html += '<div class="dt__ranges_item" data-range="' + i + '"">' + ranges[i].label + '</div>';
                 }
                 html += '</div>';
                 return html;
@@ -286,6 +306,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 }
 
                 html += '</div>';
+
                 this.$el.html(html);
 
                 this.onAfterRender();
@@ -296,15 +317,20 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 if (this.params.type === 'date') {
                     this.el.val(this.dateStart.format(this.params.format));
                 } else {
-                    this.el.val(this.dateStart.format(this.params.format) + this.params.delimiter + this.dateEnd.format(this.params.format));
-                }
+                        this.el.val(this.dateStart.format(this.params.format) + this.params.delimiter + this.dateEnd.format(this.params.format));
+                    }
             }
         }, {
             key: 'onAfterRender',
             value: function onAfterRender() {
                 this.$el.addClass('dt');
+
                 if (this.params.type == 'rangedate') {
                     this.$el.find('.dt__wrapper').addClass('rangedate');
+                }
+
+                if (this.params.modalMode) {
+                    this.$el.addClass('dt-modal');
                 }
             }
         }]);

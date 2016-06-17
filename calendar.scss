@@ -13,7 +13,7 @@ $cloud: #ecf0f1;
 	max-height: 0px;
 	max-width: 0px;
 	overflow: hidden;
-	border-radius: 50%;
+	border-radius: 30%;
 	box-shadow: 1px 2px 8px rgba(0,0,0,0.15);
 	&.show { 
 		overflow: inherit;
@@ -22,6 +22,26 @@ $cloud: #ecf0f1;
 		opacity:1;
 		display: block;
 		border-radius: 0;
+	}
+	//Modal mode
+	&-modal {
+		left: 50%;
+	    top: 50%;
+		transform: translate(-50%, -50%);
+	    box-shadow: 0px 0px 20px rgba(0,0,0,0.35);
+	    &_close {
+	    	position: absolute;
+		    width: 25px;
+		    height: 25px;
+		    top: 0;
+		    right: 0;
+		    z-index: 20;
+		    color: #fff;
+		    font-size: 15px;
+		    background: rgba(0,0,0,0.20);
+		    text-align: center;
+		    cursor: pointer;
+	    }
 	}
 	&__head {
 		background: $green;
@@ -33,6 +53,7 @@ $cloud: #ecf0f1;
 			font-size: 12px;
 			line-height: 20px;
 		}
+
 		.next, .prev {
 			display: inline-block;
 			color: #fff;
@@ -114,7 +135,7 @@ $cloud: #ecf0f1;
 		}
 	}
 
-	&__rages {
+	&__ranges {
 		display: block;
 		text-align: center;
 		background-color: $cloud;
@@ -185,6 +206,11 @@ $cloud: #ecf0f1;
 				font-weight: 300;
 				opacity: 0.8;
 				line-height: 30px;
+				& > span {
+					display: inline-block;
+					min-width: 70px;
+					font-size: 15px;
+				}
 			}
 			&_day {
 				color: #fff;
