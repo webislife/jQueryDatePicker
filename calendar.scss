@@ -3,32 +3,46 @@ $blue: #3498db;
 $cloud: #ecf0f1;
 
 .dt {
-	position: absolute;
-	background-color: #fff;
-	top: 50px;
-	left: 0;
-	z-index: 100;
 	transition: all 0.3s ease;
-	opacity: 0.5;
-	max-height: 0px;
-	max-width: 0px;
-	overflow: hidden;
-	border-radius: 30%;
-	box-shadow: 1px 2px 8px rgba(0,0,0,0.15);
+	z-index: 100;
+	width: 0;
+	height: 0;
 	&.show { 
-		overflow: inherit;
-		max-width: 600px;
-		max-height: 520px;
-		opacity:1;
-		display: block;
-		border-radius: 0;
+		width: auto;
+		height: auto;
+		& .dt__wrapper {
+			overflow: inherit;
+			max-width: 600px;
+			max-height: 520px;
+			opacity:1;
+			display: block;
+			border-radius: 0;
+		}
+		& .dt-modal_wrapper {
+			left: 0;
+			right: 0;
+			top: 0;
+			bottom: 0;
+			width: 100%;
+			height: 100%;
+		}
 	}
 	//Modal mode
 	&-modal {
-		left: 50%;
-	    top: 50%;
-		transform: translate(-50%, -50%);
-	    box-shadow: 0px 0px 20px rgba(0,0,0,0.35);
+
+		& .dt__wrapper {
+			left: 50%;
+		    top: 50%;
+			transform: translate(-50%, -50%);
+		    box-shadow: 0px 0px 20px rgba(0,0,0,0.35);
+		}
+		&_wrapper {
+			bottom: -99999px;
+			position: absolute;
+			height: 0;
+			width: 0;
+			background: rgba(0,0,0,0.35);
+		}
 	    &_close {
 	    	position: absolute;
 		    width: 25px;
@@ -123,6 +137,19 @@ $cloud: #ecf0f1;
 		}
 	}
 	&__wrapper {
+		position: absolute;
+		background-color: #fff;
+		top: 50px;
+		left: 0;
+		z-index: 100;
+		transition: all 0.3s ease;
+		opacity: 0.5;
+		max-height: 0px;
+		max-width: 0px;
+		overflow: hidden;
+		border-radius: 30%;
+		box-shadow: 1px 2px 8px rgba(0,0,0,0.15);
+		transition: all 0.3s ease;
 		&.rangedate {
 			min-width: 571px;
 			.dt__calendar:first-child {

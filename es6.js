@@ -59,11 +59,11 @@
         setActiveDate(event, type = 'start') {
             var el = event.currentTarget,
                 dayNum = parseInt(el.innerHTML, 10),
-                vd = type === 'start' ? this.viewStartDate : this.viewEndDate;
+                viewDate = type === 'start' ? this.viewStartDate : this.viewEndDate;
 
             if (String(dayNum).length === 1) dayNum = '0' + dayNum;
 
-            var date = moment(vd.format('YYYY MM') + ' ' + dayNum);
+            var date = moment(Date.parse(viewDate.format('YYYY MM') + ' ' + dayNum));
 
             if (type === 'start') {
                 if (date.isAfter(this.dateEnd, 'day') && this.params.type === 'rangedate') {
@@ -186,7 +186,6 @@
          * @return {void} 
          */
         keyDown(event) {
-            console.log('keydown', event);
             //Hide on press ESC
             if(event.keyCode === 27) {
                 this.hideCalendar();
@@ -266,12 +265,12 @@
 
             html += '<div class="dt__calendar_' + navClass + '"><div class="dt__calendar_m">';
             html += '<div class="dt__calendar_m_w">';
-            for (var wi = 0; wi < weekShortDays.length; wi++) {
+            for (let wi = 0; wi < weekShortDays.length; wi++) {
                 html += '<div class="dt__calendar_m_w_n">' + weekShortDays[wi] + '</div>';
             };
             html += '</div>';
 
-            for (var fi = 0; fi < firstDayOfWeek; fi++) {
+            for (let fi = 0; fi < firstDayOfWeek; fi++) {
                 html += '<div class="dt__calendar_m_d_e"></div>';
             };
 
@@ -307,6 +306,8 @@
         render() {
             var html = '';
 
+            if (this.params.modalMode) html += '<div class="dt-modal_wrapper">';
+
             html += '<div class="dt__wrapper">';
 
             html += this.renderCalendar(this.viewStartDate, 'start');
@@ -318,6 +319,8 @@
                     html += this.renderRanges();
                 }
             }
+
+            if (this.params.modalMode) html += '</div>';
 
             html += '</div>';
 
@@ -350,6 +353,15 @@
             if (this.params.modalMode) {
                 this.$el.addClass('dt-modal');
             }
+        }
+        /**
+         * Destroy calendar
+         */
+        destroy() {
+            this.$el
+                .detach()
+                .off()
+                .remove();
         }
     }
 

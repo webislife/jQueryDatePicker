@@ -58,11 +58,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                 var el = event.currentTarget,
                     dayNum = parseInt(el.innerHTML, 10),
-                    vd = type === 'start' ? this.viewStartDate : this.viewEndDate;
+                    viewDate = type === 'start' ? this.viewStartDate : this.viewEndDate;
 
                 if (String(dayNum).length === 1) dayNum = '0' + dayNum;
 
-                var date = moment(vd.format('YYYY MM') + ' ' + dayNum);
+                var date = moment(Date.parse(viewDate.format('YYYY MM') + ' ' + dayNum));
 
                 if (type === 'start') {
                     if (date.isAfter(this.dateEnd, 'day') && this.params.type === 'rangedate') {
@@ -298,6 +298,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             value: function render() {
                 var html = '';
 
+                if (this.params.modalMode) html += '<div class="dt-modal_wrapper">';
+
                 html += '<div class="dt__wrapper">';
 
                 html += this.renderCalendar(this.viewStartDate, 'start');
@@ -309,6 +311,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         html += this.renderRanges();
                     }
                 }
+
+                if (this.params.modalMode) html += '</div>';
 
                 html += '</div>';
 
@@ -337,6 +341,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 if (this.params.modalMode) {
                     this.$el.addClass('dt-modal');
                 }
+            }
+        }, {
+            key: 'destroy',
+            value: function destroy() {
+                this.$el.detach().off().remove();
             }
         }]);
 
