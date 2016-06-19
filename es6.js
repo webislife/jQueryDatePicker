@@ -14,7 +14,6 @@
                 delimiter: '-', // display visual delimiter for rangedate type picker
                 ranges: [], //ranges
                 modalMode: false, //display center on screen
-                firstDayOfWeek: 1, //for rus weekday fix)
                 onShow: () => {},
                 onHide: () => {}
             }, params);
@@ -165,7 +164,7 @@
                 .on('click', '.dt__start .dt__calendar_head_year .prev', event => this.prevDate(event, 'start', 'year'))
                 .on('click', '.dt__end .dt__calendar_head_year .next', event => this.nextDate(event, 'end', 'year'))
                 .on('click', '.dt__end .dt__calendar_head_year .prev', event => this.prevDate(event, 'end', 'year'))
-                .on('click', '.dt__rages_item', event => this.setActiveRange(event))
+                .on('click', '.dt__ranges_item', event => this.setActiveRange(event))
                 .on('click', '.dt-modal_close', event => this.hideCalendar())
                 .on('click', '.dt__wrapper', event => false);
 
@@ -248,16 +247,15 @@
                 firstDayOfWeek = date.clone().startOf('month').weekday();
 
             //small hack for russian weekdays
-            if(this.params.firstDayOfWeek === 1) {
-                weekShortDays = ['пн', 'вт', 'ср', 'чт', 'пт', 'cб', 'вс'];
-            }
+            if (this.params.locale === 'ru') weekShortDays = ['пн', 'вт', 'ср', 'чт', 'пт', 'cб', 'вс'];
+            
 
             html += '<div class="dt__calendar dt__' + type + '">';
             html += '<div class="dt__calendar_head">';
             html += '<div class="dt__calendar_head_wday">' + selectDate.format('dddd') + '</div>';
             html += '<div class="dt__calendar_head_month"><i class="prev"><</i><span>' + selectDate.format('MMMM') + '</span><i class="next">></i></div>';
             html += '<div class="dt__calendar_head_day">' + selectDate.format('D') + '</div>';
-            html += '<div class="dt__calendar_head_year"><i class="prev"><</i>' + selectDate.format('Y') + '<i class="next">></i></div>';
+            html += '<div class="dt__calendar_head_year"><i class="prev"><</i><span>' + selectDate.format('Y') + '</span><i class="next">></i></div>';
             html += '</div>';
             html += '<div class="dt__calendar_nav">';
             html += '<div class="dt__calendar_nav_title">' + date.format('MMM YYYY') + '</div>';

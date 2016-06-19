@@ -20,7 +20,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 delimiter: '-',
                 ranges: [],
                 modalMode: !1,
-                firstDayOfWeek: 1,
                 onShow: function onShow() {},
                 onHide: function onHide() {}
             }, params);
@@ -163,7 +162,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     return _this.nextDate(event, 'end', 'year');
                 }).on('click', '.dt__end .dt__calendar_head_year .prev', function (event) {
                     return _this.prevDate(event, 'end', 'year');
-                }).on('click', '.dt__rages_item', function (event) {
+                }).on('click', '.dt__ranges_item', function (event) {
                     return _this.setActiveRange(event);
                 }).on('click', '.dt-modal_close', function (event) {
                     return _this.hideCalendar();
@@ -244,16 +243,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     weekShortDays = moment.weekdaysShort(),
                     firstDayOfWeek = date.clone().startOf('month').weekday();
 
-                if (this.params.firstDayOfWeek === 1) {
-                    weekShortDays = ['пн', 'вт', 'ср', 'чт', 'пт', 'cб', 'вс'];
-                }
+                if (this.params.locale === 'ru') weekShortDays = ['пн', 'вт', 'ср', 'чт', 'пт', 'cб', 'вс'];
 
                 html += '<div class="dt__calendar dt__' + type + '">';
                 html += '<div class="dt__calendar_head">';
                 html += '<div class="dt__calendar_head_wday">' + selectDate.format('dddd') + '</div>';
                 html += '<div class="dt__calendar_head_month"><i class="prev"><</i><span>' + selectDate.format('MMMM') + '</span><i class="next">></i></div>';
                 html += '<div class="dt__calendar_head_day">' + selectDate.format('D') + '</div>';
-                html += '<div class="dt__calendar_head_year"><i class="prev"><</i>' + selectDate.format('Y') + '<i class="next">></i></div>';
+                html += '<div class="dt__calendar_head_year"><i class="prev"><</i><span>' + selectDate.format('Y') + '</span><i class="next">></i></div>';
                 html += '</div>';
                 html += '<div class="dt__calendar_nav">';
                 html += '<div class="dt__calendar_nav_title">' + date.format('MMM YYYY') + '</div>';

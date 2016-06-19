@@ -11,7 +11,6 @@ Simple javascript date range picker. Work with moment.js
         delimiter: '-', // display visual delimiter for rangedate type picker
         ranges: [], //ranges
         modalMode: false, //display center on screen
-        firstDayOfWeek: 1, //for rus weekday fix)
         onShow: () => {},
         onHide: () => {}
     }
