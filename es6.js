@@ -3,7 +3,6 @@
 
     class DatePicker {
         constructor(el, params) {
-
             //default params
             this.params = $.extend({
                 type: 'date', // || rangedate
@@ -15,6 +14,7 @@
                 ranges: [], //ranges
                 modalMode: false, //display center on screen
                 onShow: () => {},
+                firstDayOfWeek: moment.localeData().firstDayOfWeek(), //first number day of the week
                 onHide: () => {}
             }, params);
 
@@ -246,9 +246,14 @@
                 weekShortDays = moment.weekdaysShort(),
                 firstDayOfWeek = date.clone().startOf('month').weekday();
 
-            //small hack for russian weekdays
-            if (this.params.locale === 'ru') weekShortDays = ['пн', 'вт', 'ср', 'чт', 'пт', 'cб', 'вс'];
-            
+            // update day names order to firstDayOfWeek
+            if (this.params.firstDayOfWeek != 0) {
+                let i = this.params.firstDayOfWeek;
+                while (i > 0) {
+                    weekShortDays.push(weekShortDays.shift());
+                    i--
+                }
+            }           
 
             html += '<div class="dt__calendar dt__' + type + '">';
             html += '<div class="dt__calendar_head">';
@@ -263,6 +268,7 @@
 
             html += '<div class="dt__calendar_' + navClass + '"><div class="dt__calendar_m">';
             html += '<div class="dt__calendar_m_w">';
+
             for (let wi = 0; wi < weekShortDays.length; wi++) {
                 html += '<div class="dt__calendar_m_w_n">' + weekShortDays[wi] + '</div>';
             };

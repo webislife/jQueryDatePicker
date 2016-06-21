@@ -21,6 +21,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 ranges: [],
                 modalMode: !1,
                 onShow: function onShow() {},
+                firstDayOfWeek: moment.localeData().firstDayOfWeek(),
                 onHide: function onHide() {}
             }, params);
 
@@ -243,7 +244,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     weekShortDays = moment.weekdaysShort(),
                     firstDayOfWeek = date.clone().startOf('month').weekday();
 
-                if (this.params.locale === 'ru') weekShortDays = ['пн', 'вт', 'ср', 'чт', 'пт', 'cб', 'вс'];
+                if (this.params.firstDayOfWeek != 0) {
+                    var i = this.params.firstDayOfWeek;
+                    while (i > 0) {
+                        weekShortDays.push(weekShortDays.shift());
+                        i--;
+                    }
+                }
 
                 html += '<div class="dt__calendar dt__' + type + '">';
                 html += '<div class="dt__calendar_head">';
@@ -258,6 +265,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                 html += '<div class="dt__calendar_' + navClass + '"><div class="dt__calendar_m">';
                 html += '<div class="dt__calendar_m_w">';
+
                 for (var wi = 0; wi < weekShortDays.length; wi++) {
                     html += '<div class="dt__calendar_m_w_n">' + weekShortDays[wi] + '</div>';
                 };
