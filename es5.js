@@ -115,23 +115,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     maxDate = this.params.maxDate,
                     newDate = this.viewStartDate[action](1, dateType);
 
-                if (calendar === 'start') {
-                    if (minDate !== null && (typeof minDate === 'undefined' ? 'undefined' : _typeof(minDate)) === 'object' && moment(newDate).isBefore(minDate) || maxDate !== null && (typeof maxDate === 'undefined' ? 'undefined' : _typeof(maxDate)) === 'object' && moment(newDate).isAfter(maxDate)) {
-                        this.viewStartDate = moment(newDate);
-                        this.render();
-                        console.log('not render');
-                    } else {
-                        this.setStartDate(newDate);
-                    }
+                if (minDate !== null && (typeof minDate === 'undefined' ? 'undefined' : _typeof(minDate)) === 'object' && moment(newDate).isBefore(minDate) || maxDate !== null && (typeof maxDate === 'undefined' ? 'undefined' : _typeof(maxDate)) === 'object' && moment(newDate).isAfter(maxDate)) {
+                    this.viewStartDate = moment(newDate);
+                    this.render();
                 } else {
-                    if (maxDate !== null && (typeof maxDate === 'undefined' ? 'undefined' : _typeof(maxDate)) === 'object' && newDate.isAfter(maxDate)) {
-                        this.viewEndDate = moment(newDate);
-                        this.render();
-                        console.log('not render');
-                    } else {
-                        this.setEndDate(newDate);
-                    }
+                    calendar === 'start' ? this.setStartDate(newDate) : this.setEndDate(newDate);
                 }
+
                 event.stopPropagation();
             }
         }, {

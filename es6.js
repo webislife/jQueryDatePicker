@@ -119,25 +119,15 @@
                 maxDate = this.params.maxDate,
                 newDate = this.viewStartDate[action](1, dateType);
 
-            if (calendar === 'start') {
-
-                //Check max and min dates
-                if(minDate !== null && typeof minDate === 'object' && moment(newDate).isBefore(minDate) || 
-                    maxDate !== null && typeof maxDate === 'object' && moment(newDate).isAfter(maxDate)) {
-                    this.viewStartDate = moment(newDate);
-                    this.render();
-                } else {
-                    this.setStartDate(newDate);
-                }
+            //Check max and min dates
+            if(minDate !== null && typeof minDate === 'object' && moment(newDate).isBefore(minDate) || 
+                maxDate !== null && typeof maxDate === 'object' && moment(newDate).isAfter(maxDate)) {
+                this.viewStartDate = moment(newDate);
+                this.render();
             } else {
-                //Check max and min dates
-                if(maxDate !== null && typeof maxDate === 'object' && newDate.isAfter(maxDate)) {
-                    this.viewEndDate = moment(newDate);
-                        this.render();
-                } else {
-                    this.setEndDate(newDate);
-                }
+                calendar === 'start' ? this.setStartDate(newDate) : this.setEndDate(newDate);
             }
+
             event.stopPropagation();
         }
         /**
