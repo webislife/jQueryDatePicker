@@ -332,6 +332,10 @@ $cloud: #ecf0f1;
 					box-sizing: border-box;
 					position: relative;
 				}
+				&.disabled {
+					opacity: 0.5;
+					pointer-events: none;
+				}
 			}
 		}
 	}

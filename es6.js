@@ -13,8 +13,10 @@
                 delimiter: '-', // display visual delimiter for rangedate type picker
                 ranges: [], //ranges
                 modalMode: false, //display center on screen
-                onShow: () => {},
+                minDate: null, //min available moment date
+                maxDate: null, //max available moment date
                 firstDayOfWeek: moment.localeData().firstDayOfWeek(), //first number day of the week
+                onShow: () => {},
                 onHide: () => {}
             }, params);
 
@@ -58,12 +60,18 @@
         setActiveDate(event, type = 'start') {
             var el = event.currentTarget,
                 dayNum = parseInt(el.innerHTML, 10),
+                minDate = this.params.minDate,
+                maxDate = this.params.maxDate,
                 viewDate = type === 'start' ? this.viewStartDate : this.viewEndDate;
 
             if (String(dayNum).length === 1) dayNum = '0' + dayNum;
 
             var date = moment(Date.parse(viewDate.format('YYYY MM') + ' ' + dayNum));
-
+            
+            //Check max and min dates
+            if(minDate !== null && typeof minDate === 'object' && date.isBefore(minDate)) return;
+            if(maxDate !== null && typeof maxDate === 'object' && date.isAfter(maxDate)) return;
+            
             if (type === 'start') {
                 if (date.isAfter(this.dateEnd, 'day') && this.params.type === 'rangedate') {
                     this.dateEnd = date;
@@ -100,36 +108,37 @@
             this.render();
         }
         /**
-         * Set next date by params
+         * Set next or prev date by params
          * @param  {Object} event    jQuery event
          * @param  {String} calendar end or start type 
          * @param  {String} dateType day or week or month or year
          * @return {void}          
          */
-        nextDate(event, calendar = 'start', dateType = 'day') {
+        changeEventDate(event, calendar = 'start', dateType = 'day', action = 'add') {
+            var minDate = this.params.minDate,
+                maxDate = this.params.maxDate,
+                newDate = this.viewStartDate[action](1, dateType);
+
             if (calendar === 'start') {
-                let newDate = new Date(this.viewStartDate.add(1, dateType).format('YYYY MM DD'));
-                this.setStartDate(newDate);
+
+                //Check max and min dates
+                if(minDate !== null && typeof minDate === 'object' && moment(newDate).isBefore(minDate) || 
+                    maxDate !== null && typeof maxDate === 'object' && moment(newDate).isAfter(maxDate)) {
+                    this.viewStartDate = moment(newDate);
+                    this.render();
+                    console.log('not render');
+                } else {
+                    this.setStartDate(newDate);
+                }
             } else {
-                let newDate = new Date(this.viewEndDate.add(1, dateType).format('YYYY MM DD'));
-                this.setEndDate(newDate);
-            }
-            event.stopPropagation();
-        }
-        /**
-         * Set prev date by params
-         * @param  {Object} event    jQuery event
-         * @param  {String} calendar end or start type 
-         * @param  {String} dateType day or week or month or year
-         * @return {void}          
-         */
-        prevDate(event, calendar = 'start', dateType = 'day') {
-            if (calendar === 'start') {
-                let newDate = new Date(this.viewStartDate.subtract(1, dateType).format('YYYY MM DD'));
-                this.setStartDate(newDate);
-            } else {
-                let newDate = new Date(this.viewEndDate.subtract(1, dateType).format('YYYY MM DD'));
-                this.setEndDate(newDate);
+                //Check max and min dates
+                if(maxDate !== null && typeof maxDate === 'object' && newDate.isAfter(maxDate)) {
+                    this.viewEndDate = moment(newDate);
+                        this.render();
+                        console.log('not render');
+                } else {
+                    this.setEndDate(newDate);
+                }
             }
             event.stopPropagation();
         }
@@ -152,18 +161,18 @@
          * Init all events
          */
         initEvents() {
-            //jQuery Calendar
+            //Calendar
             this.$el
                 .on('click', '.dt__calendar_start .dt__calendar_m_d', event => this.setActiveDate(event, 'start'))
                 .on('click', '.dt__calendar_end .dt__calendar_m_d', event => this.setActiveDate(event, 'end'))
-                .on('click', '.dt__start .dt__calendar_head_month .next', event => this.nextDate(event, 'start', 'month'))
-                .on('click', '.dt__start .dt__calendar_head_month .prev', event => this.prevDate(event, 'start', 'month'))
-                .on('click', '.dt__end .dt__calendar_head_month .next', event => this.nextDate(event, 'end', 'month'))
-                .on('click', '.dt__end .dt__calendar_head_month .prev', event => this.prevDate(event, 'end', 'month'))
-                .on('click', '.dt__start .dt__calendar_head_year .next', event => this.nextDate(event, 'start', 'year'))
-                .on('click', '.dt__start .dt__calendar_head_year .prev', event => this.prevDate(event, 'start', 'year'))
-                .on('click', '.dt__end .dt__calendar_head_year .next', event => this.nextDate(event, 'end', 'year'))
-                .on('click', '.dt__end .dt__calendar_head_year .prev', event => this.prevDate(event, 'end', 'year'))
+                .on('click', '.dt__start .dt__calendar_head_month .next', event => this.changeEventDate(event, 'start', 'month', 'add'))
+                .on('click', '.dt__start .dt__calendar_head_month .prev', event => this.changeEventDate(event, 'start', 'month', 'subtract'))
+                .on('click', '.dt__end .dt__calendar_head_month .next', event => this.changeEventDate(event, 'end', 'month', 'add'))
+                .on('click', '.dt__end .dt__calendar_head_month .prev', event => this.changeEventDate(event, 'end', 'month', 'subtract'))
+                .on('click', '.dt__start .dt__calendar_head_year .next', event => this.changeEventDate(event, 'start', 'year', 'add'))
+                .on('click', '.dt__start .dt__calendar_head_year .prev', event => this.changeEventDate(event, 'start', 'year', 'subtract'))
+                .on('click', '.dt__end .dt__calendar_head_year .next', event => this.changeEventDate(event, 'end', 'year', 'add'))
+                .on('click', '.dt__end .dt__calendar_head_year .prev', event => this.changeEventDate(event, 'end', 'year', 'subtract'))
                 .on('click', '.dt__ranges_item', event => this.setActiveRange(event))
                 .on('click', '.dt-modal_close', event => this.hideCalendar())
                 .on('click', '.dt__wrapper', event => false);
@@ -210,23 +219,31 @@
             var html = '',
                 daysInMonth = date.daysInMonth(),
                 sameDate = type === 'start' ? this.dateStart : this.dateEnd,
+                minDate = this.params.minDate,
+                maxDate = this.params.maxDate,
                 dayClass = '';
 
             for (var i = 0; i < daysInMonth; i++) {
                 let forDate = moment(new Date(date.format('YYYY MM') + ' ' + (i + 1)));
 
                 if (forDate.isSame(this.dateStart, 'day')) {
-                    dayClass = 'active';
+                    dayClass = 'active ';
                 } else if (forDate.isSame(this.dateEnd, 'day') && this.params.type === 'rangedate') {
-                    dayClass = 'active';
+                    dayClass = 'active ';
                 } else {
                     dayClass = '';
                 }
 
                 //Add class for between dates
                 if (this.params.type === 'rangedate' && forDate.isAfter(this.dateStart, 'day') && forDate.isBefore(this.dateEnd, 'day')) {
-                    dayClass += 'between';
+                    dayClass += 'between ';
                 }
+                //Add class for disabled dates
+
+                //Check max and min dates
+                if(minDate !== null && typeof minDate === 'object' && forDate.isBefore(minDate)) dayClass += 'disabled';
+                if(maxDate !== null && typeof maxDate === 'object' && forDate.isAfter(maxDate)) dayClass += 'disabled';
+
                 html += '<div class="dt__calendar_m_d ' + dayClass + '">' + (i + 1) + '</div>';
             };
 

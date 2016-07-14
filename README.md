@@ -10,6 +10,8 @@ Simple javascript date range picker. Work with moment.js
         format: 'YYYY.MM.DD', //Display date format
         delimiter: '-', // display visual delimiter for rangedate type picker
         ranges: [], //ranges
+        minDate: null, //min date
+        maxDate: null, //max date
         modalMode: false, //display center on screen
         firstDayOfWeek: moment.localeData().firstDayOfWeek(),
         onShow: () => {},

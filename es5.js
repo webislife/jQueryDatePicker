@@ -1,5 +1,7 @@
 'use strict';
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || !1; descriptor.configurable = !0; if ("value" in descriptor) descriptor.writable = !0; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -20,8 +22,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 delimiter: '-',
                 ranges: [],
                 modalMode: !1,
-                onShow: function onShow() {},
+                minDate: null,
+                maxDate: null,
                 firstDayOfWeek: moment.localeData().firstDayOfWeek(),
+                onShow: function onShow() {},
                 onHide: function onHide() {}
             }, params);
 
@@ -58,11 +62,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                 var el = event.currentTarget,
                     dayNum = parseInt(el.innerHTML, 10),
+                    minDate = this.params.minDate,
+                    maxDate = this.params.maxDate,
                     viewDate = type === 'start' ? this.viewStartDate : this.viewEndDate;
 
                 if (String(dayNum).length === 1) dayNum = '0' + dayNum;
 
                 var date = moment(Date.parse(viewDate.format('YYYY MM') + ' ' + dayNum));
+
+                if (minDate !== null && (typeof minDate === 'undefined' ? 'undefined' : _typeof(minDate)) === 'object' && date.isBefore(minDate)) return;
+                if (maxDate !== null && (typeof maxDate === 'undefined' ? 'undefined' : _typeof(maxDate)) === 'object' && date.isAfter(maxDate)) return;
 
                 if (type === 'start') {
                     if (date.isAfter(this.dateEnd, 'day') && this.params.type === 'rangedate') {
@@ -96,32 +105,32 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 this.render();
             }
         }, {
-            key: 'nextDate',
-            value: function nextDate(event) {
+            key: 'changeEventDate',
+            value: function changeEventDate(event) {
                 var calendar = arguments.length <= 1 || arguments[1] === undefined ? 'start' : arguments[1];
                 var dateType = arguments.length <= 2 || arguments[2] === undefined ? 'day' : arguments[2];
+                var action = arguments.length <= 3 || arguments[3] === undefined ? 'add' : arguments[3];
+
+                var minDate = this.params.minDate,
+                    maxDate = this.params.maxDate,
+                    newDate = this.viewStartDate[action](1, dateType);
 
                 if (calendar === 'start') {
-                    var newDate = new Date(this.viewStartDate.add(1, dateType).format('YYYY MM DD'));
-                    this.setStartDate(newDate);
+                    if (minDate !== null && (typeof minDate === 'undefined' ? 'undefined' : _typeof(minDate)) === 'object' && moment(newDate).isBefore(minDate) || maxDate !== null && (typeof maxDate === 'undefined' ? 'undefined' : _typeof(maxDate)) === 'object' && moment(newDate).isAfter(maxDate)) {
+                        this.viewStartDate = moment(newDate);
+                        this.render();
+                        console.log('not render');
+                    } else {
+                        this.setStartDate(newDate);
+                    }
                 } else {
-                    var _newDate = new Date(this.viewEndDate.add(1, dateType).format('YYYY MM DD'));
-                    this.setEndDate(_newDate);
-                }
-                event.stopPropagation();
-            }
-        }, {
-            key: 'prevDate',
-            value: function prevDate(event) {
-                var calendar = arguments.length <= 1 || arguments[1] === undefined ? 'start' : arguments[1];
-                var dateType = arguments.length <= 2 || arguments[2] === undefined ? 'day' : arguments[2];
-
-                if (calendar === 'start') {
-                    var newDate = new Date(this.viewStartDate.subtract(1, dateType).format('YYYY MM DD'));
-                    this.setStartDate(newDate);
-                } else {
-                    var _newDate2 = new Date(this.viewEndDate.subtract(1, dateType).format('YYYY MM DD'));
-                    this.setEndDate(_newDate2);
+                    if (maxDate !== null && (typeof maxDate === 'undefined' ? 'undefined' : _typeof(maxDate)) === 'object' && newDate.isAfter(maxDate)) {
+                        this.viewEndDate = moment(newDate);
+                        this.render();
+                        console.log('not render');
+                    } else {
+                        this.setEndDate(newDate);
+                    }
                 }
                 event.stopPropagation();
             }
@@ -148,21 +157,21 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 }).on('click', '.dt__calendar_end .dt__calendar_m_d', function (event) {
                     return _this.setActiveDate(event, 'end');
                 }).on('click', '.dt__start .dt__calendar_head_month .next', function (event) {
-                    return _this.nextDate(event, 'start', 'month');
+                    return _this.changeEventDate(event, 'start', 'month', 'add');
                 }).on('click', '.dt__start .dt__calendar_head_month .prev', function (event) {
-                    return _this.prevDate(event, 'start', 'month');
+                    return _this.changeEventDate(event, 'start', 'month', 'subtract');
                 }).on('click', '.dt__end .dt__calendar_head_month .next', function (event) {
-                    return _this.nextDate(event, 'end', 'month');
+                    return _this.changeEventDate(event, 'end', 'month', 'add');
                 }).on('click', '.dt__end .dt__calendar_head_month .prev', function (event) {
-                    return _this.prevDate(event, 'end', 'month');
+                    return _this.changeEventDate(event, 'end', 'month', 'subtract');
                 }).on('click', '.dt__start .dt__calendar_head_year .next', function (event) {
-                    return _this.nextDate(event, 'start', 'year');
+                    return _this.changeEventDate(event, 'start', 'year', 'add');
                 }).on('click', '.dt__start .dt__calendar_head_year .prev', function (event) {
-                    return _this.prevDate(event, 'start', 'year');
+                    return _this.changeEventDate(event, 'start', 'year', 'subtract');
                 }).on('click', '.dt__end .dt__calendar_head_year .next', function (event) {
-                    return _this.nextDate(event, 'end', 'year');
+                    return _this.changeEventDate(event, 'end', 'year', 'add');
                 }).on('click', '.dt__end .dt__calendar_head_year .prev', function (event) {
-                    return _this.prevDate(event, 'end', 'year');
+                    return _this.changeEventDate(event, 'end', 'year', 'subtract');
                 }).on('click', '.dt__ranges_item', function (event) {
                     return _this.setActiveRange(event);
                 }).on('click', '.dt-modal_close', function (event) {
@@ -212,22 +221,28 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 var html = '',
                     daysInMonth = date.daysInMonth(),
                     sameDate = type === 'start' ? this.dateStart : this.dateEnd,
+                    minDate = this.params.minDate,
+                    maxDate = this.params.maxDate,
                     dayClass = '';
 
                 for (var i = 0; i < daysInMonth; i++) {
                     var forDate = moment(new Date(date.format('YYYY MM') + ' ' + (i + 1)));
 
                     if (forDate.isSame(this.dateStart, 'day')) {
-                        dayClass = 'active';
+                        dayClass = 'active ';
                     } else if (forDate.isSame(this.dateEnd, 'day') && this.params.type === 'rangedate') {
-                        dayClass = 'active';
+                        dayClass = 'active ';
                     } else {
                         dayClass = '';
                     }
 
                     if (this.params.type === 'rangedate' && forDate.isAfter(this.dateStart, 'day') && forDate.isBefore(this.dateEnd, 'day')) {
-                        dayClass += 'between';
+                        dayClass += 'between ';
                     }
+
+                    if (minDate !== null && (typeof minDate === 'undefined' ? 'undefined' : _typeof(minDate)) === 'object' && forDate.isBefore(minDate)) dayClass += 'disabled';
+                    if (maxDate !== null && (typeof maxDate === 'undefined' ? 'undefined' : _typeof(maxDate)) === 'object' && forDate.isAfter(maxDate)) dayClass += 'disabled';
+
                     html += '<div class="dt__calendar_m_d ' + dayClass + '">' + (i + 1) + '</div>';
                 };
 
