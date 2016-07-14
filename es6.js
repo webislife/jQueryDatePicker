@@ -126,7 +126,6 @@
                     maxDate !== null && typeof maxDate === 'object' && moment(newDate).isAfter(maxDate)) {
                     this.viewStartDate = moment(newDate);
                     this.render();
-                    console.log('not render');
                 } else {
                     this.setStartDate(newDate);
                 }
@@ -135,7 +134,6 @@
                 if(maxDate !== null && typeof maxDate === 'object' && newDate.isAfter(maxDate)) {
                     this.viewEndDate = moment(newDate);
                         this.render();
-                        console.log('not render');
                 } else {
                     this.setEndDate(newDate);
                 }
