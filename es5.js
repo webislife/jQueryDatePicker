@@ -68,7 +68,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
                 if (String(dayNum).length === 1) dayNum = '0' + dayNum;
 
-                var date = moment(Date.parse(viewDate.format('YYYY MM') + ' ' + dayNum));
+                var date = moment(viewDate.format('YYYY-MM') + '-' + dayNum);
 
                 if (minDate !== null && (typeof minDate === 'undefined' ? 'undefined' : _typeof(minDate)) === 'object' && date.isBefore(minDate)) return;
                 if (maxDate !== null && (typeof maxDate === 'undefined' ? 'undefined' : _typeof(maxDate)) === 'object' && date.isAfter(maxDate)) return;
@@ -216,7 +216,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     dayClass = '';
 
                 for (var i = 0; i < daysInMonth; i++) {
-                    var forDate = moment(new Date(date.format('YYYY MM') + ' ' + (i + 1)));
+                    var forDate = moment(date.format('YYYY-MM') + '-' + (i + 1));
 
                     if (forDate.isSame(this.dateStart, 'day')) {
                         dayClass = 'active ';
@@ -230,8 +230,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                         dayClass += 'between ';
                     }
 
-                    if (minDate !== null && (typeof minDate === 'undefined' ? 'undefined' : _typeof(minDate)) === 'object' && forDate.isBefore(minDate)) dayClass += 'disabled';
-                    if (maxDate !== null && (typeof maxDate === 'undefined' ? 'undefined' : _typeof(maxDate)) === 'object' && forDate.isAfter(maxDate)) dayClass += 'disabled';
+                    if ((typeof minDate === 'undefined' ? 'undefined' : _typeof(minDate)) === 'object' && forDate.isBefore(minDate)) dayClass += 'disabled';
+                    if ((typeof maxDate === 'undefined' ? 'undefined' : _typeof(maxDate)) === 'object' && forDate.isAfter(maxDate)) dayClass += 'disabled';
 
                     html += '<div class="dt__calendar_m_d ' + dayClass + '">' + (i + 1) + '</div>';
                 };

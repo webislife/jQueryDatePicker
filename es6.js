@@ -66,7 +66,7 @@
 
             if (String(dayNum).length === 1) dayNum = '0' + dayNum;
 
-            var date = moment(Date.parse(viewDate.format('YYYY MM') + ' ' + dayNum));
+            var date = moment(viewDate.format('YYYY-MM') + '-' + dayNum);
             
             //Check max and min dates
             if(minDate !== null && typeof minDate === 'object' && date.isBefore(minDate)) return;
@@ -212,7 +212,7 @@
                 dayClass = '';
 
             for (var i = 0; i < daysInMonth; i++) {
-                let forDate = moment(new Date(date.format('YYYY MM') + ' ' + (i + 1)));
+                let forDate = moment(date.format('YYYY-MM') + '-' + (i + 1));
 
                 if (forDate.isSame(this.dateStart, 'day')) {
                     dayClass = 'active ';
@@ -229,8 +229,8 @@
                 //Add class for disabled dates
 
                 //Check max and min dates
-                if(minDate !== null && typeof minDate === 'object' && forDate.isBefore(minDate)) dayClass += 'disabled';
-                if(maxDate !== null && typeof maxDate === 'object' && forDate.isAfter(maxDate)) dayClass += 'disabled';
+                if(typeof minDate === 'object' && forDate.isBefore(minDate)) dayClass += 'disabled';
+                if(typeof maxDate === 'object' && forDate.isAfter(maxDate)) dayClass += 'disabled';
 
                 html += '<div class="dt__calendar_m_d ' + dayClass + '">' + (i + 1) + '</div>';
             };
