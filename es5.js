@@ -216,7 +216,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     dayClass = '';
 
                 for (var i = 0; i < daysInMonth; i++) {
-                    var forDate = moment(date.format('YYYY-MM') + '-' + (i + 1));
+                    var dayNum = i + 1,
+                        forDate = moment(date.format('YYYY-MM') + '-' + (dayNum < 10 ? '0' + dayNum : dayNum));
 
                     if (forDate.isSame(this.dateStart, 'day')) {
                         dayClass = 'active ';
@@ -233,7 +234,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     if ((typeof minDate === 'undefined' ? 'undefined' : _typeof(minDate)) === 'object' && forDate.isBefore(minDate)) dayClass += 'disabled';
                     if ((typeof maxDate === 'undefined' ? 'undefined' : _typeof(maxDate)) === 'object' && forDate.isAfter(maxDate)) dayClass += 'disabled';
 
-                    html += '<div class="dt__calendar_m_d ' + dayClass + '">' + (i + 1) + '</div>';
+                    html += '<div class="dt__calendar_m_d ' + dayClass + '">' + dayNum + '</div>';
                 };
 
                 return html;

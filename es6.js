@@ -212,7 +212,8 @@
                 dayClass = '';
 
             for (var i = 0; i < daysInMonth; i++) {
-                let forDate = moment(date.format('YYYY-MM') + '-' + (i + 1));
+                let dayNum = i + 1,
+                    forDate = moment(date.format('YYYY-MM') + '-' + (dayNum < 10 ? '0' + dayNum : dayNum) );
 
                 if (forDate.isSame(this.dateStart, 'day')) {
                     dayClass = 'active ';
@@ -232,7 +233,7 @@
                 if(typeof minDate === 'object' && forDate.isBefore(minDate)) dayClass += 'disabled';
                 if(typeof maxDate === 'object' && forDate.isAfter(maxDate)) dayClass += 'disabled';
 
-                html += '<div class="dt__calendar_m_d ' + dayClass + '">' + (i + 1) + '</div>';
+                html += '<div class="dt__calendar_m_d ' + dayClass + '">' + dayNum + '</div>';
             };
 
             return html;
